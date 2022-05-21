@@ -4,6 +4,7 @@ const tslib_1 = require("tslib");
 const discord_js_1 = require("discord.js");
 const config_1 = tslib_1.__importDefault(require("./config"));
 const { prefix } = config_1.default;
+
 const commands = {
     'help': {
         description: 'Directory of available commands',
@@ -19,6 +20,9 @@ const commands = {
         format: 'say <message>'
     }
 };
+
+
+// help
 function helpCommand(message) {
     const footerText = "Requested by "+message.author.tag;
     const footerIcon = message.author.displayAvatarURL();

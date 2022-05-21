@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 exports.default = {
-    prefix: 'mux, ',
+    prefix: 'md.',
     token: process.env.DISCORD_TOKEN,
     intents: [
         discord_js_1.Intents.FLAGS.GUILDS,

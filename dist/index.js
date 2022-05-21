@@ -7,14 +7,17 @@ const discord_js_1 = require("discord.js");
 const config_1 = tslib_1.__importDefault(require("./config"));
 const commands_1 = tslib_1.__importDefault(require("./commands"));
 const { intents, prefix, token } = config_1.default;
+
+// Bot info, status, activity
 const client = new discord_js_1.Client({
     intents,
     presence: {
         status: 'online',
-        activities: [{
-                name: `${prefix}help`,
-                type: 'LISTENING'
-            }]
+      /* SWITCH ACTIVITIES HERE */
+         activities: [{ name: `${prefix}help`, type: 'LISTENING' }]
+        // activities: [{name: 'on Twitch', type: 'STREAMING', url:'https://twitch.tv/muxday'}]
+      // activities: [{ name: 'a game', type: 'PLAYING' }]
+      // activities: [{ name: 'something', type: 'STREAMING'}]
     }
 });
 var server = "";
@@ -60,27 +63,32 @@ fs.close
   // message/activity logged!
 });*/
 
-client.on('memberJoin', async (member) => {
-  console.log('Member: ', member, " joined!");
-});
+client.on('guildMemberAdd', async (member) => {
+  console.log('\x1b[32m%s\x1b[0m',member.username + "#" + member.discriminator,"just joined",member.guild.name);
+  logwrite(member.username + "#" + member.discriminator + " just joined!", guild.name, "ACTIVITIES");
+}); // not ready
 client.on('memberRemove', async (member) => {
   console.log('Member: ', member, 'left/removed!');
-});
+}); // not ready
+client.on('guildCreate', async (guild) => { 
+  console.log("Joined new server:",'\x1b[35m%s\x1b[0m',guild.name);
+  logwrite("Joined new server: "+String(guild.name), guild.name, "ACTIVITIES");
+}); // ready
 client.on('guildRoleCreate', async (role) => {
   console.log('Role:', role, 'created!');
-});
+}); // not ready
 client.on('guildRoleDelete', async (role) => {
   console.log("Role:", role, "deleted!");
-});
+}); // not ready
 client.on('guildChannelCreate', async (channel) => {
   console.log("Channel: " + String(channel) + " created!" );
-});
+}); // not ready
 client.on('guildChannelDelete', async (channel) => {
   console.log("Channel: " + String(channel) + " deleted!");
-});
+}); // not ready
 client.on('guildChannelUpdate', async (channel) => {
   console.log("Channel: " + String(channel) + " updated!");
-});
+}); // not ready
 /* OBSOLETE METHOD OF TRIGGERING MESSAGE EVENT
 client.on("message", async (message) => {
   const channel = message.channel;
@@ -106,6 +114,7 @@ client.on('messageCreate', async (message) => {
                 const msg = await message.reply('Pinging...');
                 await msg.edit(`Received! Current latency is  ${Date.now() - msg.createdTimestamp}ms.`);
                 break;
+            case '': 
             case 'say':
             case 'repeat':
                 if (args.length > 0)
@@ -141,13 +150,36 @@ client.on('messageCreate', async (message) => {
                 break;
         }
     } else {
-      console.log('\x1b[36m%s\x1b[0m',message.channel.guild.name,"\x1b[33m#"+message.channel.name,"\x1b[0m");
-      console.log(message.author.username + "#" + message.author.discriminator, "said: ", message.content);
+      console.log('\x1b[36m%s\x1b[0m',message.channel.guild.name,"\x1b[33m#"+message.channel.name,"\x1b[0m", message.author.username + "#" + message.author.discriminator, "said: ", message.content);
       // server = message.channel.guild;
       // FRMT : logwrite(String msg, server, chatroom)
       logwrite(String(message.author.username) + "#" + String(message.author.discriminator) + " said: " + String(message.content), message.channel.guild.name, message.channel.name);
       /* 𝐈𝐍𝐂𝐋𝐔𝐃𝐈𝐍𝐆 𝐓𝐈𝐌𝐄𝐒𝐓𝐀𝐌𝐏𝐒
 console.log(message.author, "said:", message.content, "-- Time:", stats.ctime()); */
+    };
+}); // ready
+
+/*
+INTERACTION METHOD BELOW
+*/
+
+client.on('interactionCreate', async (interaction) => {
+    if(interaction.isCommand()) {
+        if(interaction.commandName == 'authorinfo'){
+          const authorinfo_row = new discord_js_1.MessageActionRow()
+    .addComponents(
+				new discord_js_1.MessageButton()
+					.setLabel('Visit')
+          .setURL('https://muxworks.com/s/discordbots')
+					.setStyle('LINK'),
+      );
+          await message.channel.send({components: [authorinfo_row]});
+    };
+      
+//};
+//};
+
+      
     };
 });
 client.login(token);
